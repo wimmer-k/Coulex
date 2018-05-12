@@ -89,10 +89,10 @@ class kinematics:
         else:
             return math.acos( (-x*gtan-math.sqrt( 1+gtan*(1-x*x) ))/(1+gtan) )
 
-    def thetalab(self, anglecom, bcm=None):
-        if bcm is None:
-            bcm = self.ejec.bcom
-        x = self.betacm/bcm
+    def thetalab(self, anglecom, part=None):
+        if part is None:
+            part = self.ejec
+        x = self.betacm/part.bcom
         return math.atan2(math.sin(anglecom),self.gammacm*(math.cos(anglecom)+x));
 
 #    def sigmacm(self, angle_lab, sigma_lab):
@@ -103,7 +103,7 @@ class kinematics:
 #        wurzel = math.sqrt(wurzel);
 #        return sigma_lab/(1/self.gammacm*wurzel*wurzel*wurzel/(1+ggg*math.cos(math.pi-angle_com)))  
 
-    def cm_fromlab(self, angle_lab, sigma_lab, part=None):
+    def com_fromlab(self, angle_lab, sigma_lab, part=None):
         if part is None:
             part = self.ejec            
         angle_com = self.thetacom(angle_lab,part)
@@ -111,6 +111,14 @@ class kinematics:
         jacobi = self.gammacm *(1+x*math.cos(angle_com))/ (math.sin(angle_com)**2+self.gammacm**2*(math.cos(angle_com)+x)**2)**(3./2)
         #print jacobi
         return angle_com, sigma_lab*jacobi
+        
+    def lab_fromcom(self, angle_com, sigma_com, part=None):
+        if part is None:
+            part = self.ejec            
+        angle_lab = self.thetalab(angle_com,part)
+        x = self.betacm/part.bcom
+        jacobi = self.gammacm *(1+x*math.cos(angle_com))/ (math.sin(angle_com)**2+self.gammacm**2*(math.cos(angle_com)+x)**2)**(3./2)
+        return angle_lab, sigma_com/jacobi
         
 class nucleus:
     def __init__(self,*args, **kwargs):
