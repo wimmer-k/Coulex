@@ -64,6 +64,7 @@ class kinematics:
         print "target:     ",
         self.targ.report()
         print "Ebeam = %.2f AMeV = %.2f MeV/u = %.2f MeV" % (self.epa, self.epu, self.epa*self.proj.A)
+        print "E_com = %.3f MeV, T_com = %.3f MeV" % (self.comenergy, self.Tcom_initial)
         print "E_x = %.3f MeV" % self.exc
         print "beta_p(lab) = %.5f" % self.proj.blab
         

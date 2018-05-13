@@ -1,20 +1,16 @@
 #!/usr/bin/env python
 import math
 import cmath
-#import re
-#import numpy as np
 import scipy.special as sp
 import numpy as np
 from kinematics import *
 
-
-AMU = 931.4940954 # MeV
 EE = 1.439964535166 #MeV*fm 
 HBARC = 197.3269788 #MeV*fm 
 
 ## Winther Alder Nucl Phys A 319 (1979) 518
 ## equation 3.1
-def relativistic(kin, bmin, mult, mat):
+def relativistic(kin, bmin, mult, mat, targetexc=False):
     k = kin.exc/HBARC
     ## equation 2.24 (with 1.4 and 2.11)
     xi = k/kin.proj.blab/gamma(kin.proj.blab)*kin.brel(bmin)
@@ -22,7 +18,10 @@ def relativistic(kin, bmin, mult, mat):
     for ll in mult.substates():
        sigma += abs(G(mult,ll,1./kin.proj.blab))**2 * g(ll,xi)
        #print ll,  abs(G(mult,ll,1./kin.proj.blab))**2, g(ll,xi), sigma
-    sigma *= (kin.targ.Z*EE/HBARC)**2*k**(2*mult.L-2)*mat**2
+    if targetexc is True:
+        sigma *= (kin.proj.Z*EE/HBARC)**2*k**(2*mult.L-2)*mat**2
+    else:
+        sigma *= (kin.targ.Z*EE/HBARC)**2*k**(2*mult.L-2)*mat**2
     return sigma
     
     
@@ -34,6 +33,7 @@ def g(mu,xi):
     Kmu = sp.kn(mu,xi)
     Kmupp = sp.kn(mu+1,xi)
     return math.pi *xi**2 * (Kmupp**2 - Kmu**2 -2*mu/xi*Kmupp*Kmu)
+
 ## Winther Alder Nucl Phys A 319 (1979) 518
 ## Appendix B
 def G(mult,mu,x):

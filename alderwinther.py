@@ -5,19 +5,21 @@ from coulex import *
 import matplotlib.pyplot as plt
 
 def main(argv):
-    # define projectile and target
+    # define projectile and target, defaults
     pro = nucleus('22O')
     tar = nucleus('197Au')
     #beam energy
     E  = 55.6 #in MeV/u
     #excitation energy in Mev
     Ex = 3.17
-
     minb = 0
     mat = 4.5345
+    targetexc = False
 
+
+    ## read commandline arguments
     try:
-        opts, args = getopt.getopt(argv,"hv:p:t:e:x:b:m:",["proj=","targ=","ebeam=","exc=","bmin=","matE="])
+        opts, args = getopt.getopt(argv,"hv:p:t:e:x:b:m:i",["proj=","targ=","ebeam=","exc=","bmin=","matE="])
     except getopt.GetoptError:
         print 'alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (e^2fm^4)>' 
         sys.exit(2)
@@ -30,6 +32,10 @@ def main(argv):
         if opt == '-v':
             tests(arg)
             sys.exit()
+        if opt == '-i':
+            print "target excitation"
+            targetexc = True
+
         elif opt in ("-p", "--proj"):
             pro = nucleus(arg)
         elif opt in ("-t", "--targ"):
@@ -42,7 +48,8 @@ def main(argv):
             mat = float(arg)
         elif opt in ("-x", "--exc"):
             Ex = float(arg)
-    
+
+    ## setup and print kinematics
     kin = kinematics(proj=pro,targ=tar,epu=E,exc=Ex)
     kin.report()
 
@@ -50,6 +57,8 @@ def main(argv):
     dgrazing = pro.radius + tar.radius
     bgrazing =  kin.b_fromd(dgrazing)
     print "grazing distance d_grazing = %.4f fm, impact parameter b_grazing = %.4f fm" % (dgrazing,bgrazing)
+
+    ## if a minimum impact parameter is given
     if minb > 0:
         minbrel = kin.brel(minb)
         print "minimum impact paramter = %.4f fm, relativistic modification = %.4f fm" % (minb,minbrel)
@@ -58,8 +67,8 @@ def main(argv):
         print "theta_com = %.4f rad, theta_lab = %.4f rad" % (theta_com,theta_lab)
         print "theta_com = %.4f deg, theta_lab = %.4f deg" % (theta_com*180/math.pi,theta_lab*180/math.pi)
 
-        print "sigma = %.5f mb" % (relativistic(kin,minb, multipole("E",2),mat)*10)
-
+        print "sigma = %.5f mb" % (relativistic(kin,minb, multipole("E",2),mat,targetexc)*10)
+    ## use the touching sphere distance + 2 fm as safe distance, 
     else:
         dsafe = pro.radius + tar.radius + 2
         bsafe = kin.b_fromd(dsafe)
@@ -70,7 +79,7 @@ def main(argv):
         print "theta_com = %.4f rad, theta_lab = %.4f rad" % (theta_com,theta_lab)
         print "theta_com = %.4f deg, theta_lab = %.4f deg" % (theta_com*180/math.pi,theta_lab*180/math.pi)
        
-        print "sigma = %.5f mb" % (relativistic(kin,bsafe, multipole("E",2),mat)*10)
+        print "sigma = %.5f mb" % (relativistic(kin,bsafe, multipole("E",2),mat,targetexc)*10)
   
 
     
