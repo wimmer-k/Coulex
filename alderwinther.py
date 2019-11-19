@@ -58,6 +58,18 @@ def main(argv):
     bgrazing =  kin.b_fromd(dgrazing)
     print "grazing distance d_grazing = %.4f fm, impact parameter b_grazing = %.4f fm" % (dgrazing,bgrazing)
 
+#    theta = np.linspace(0,5,501)
+#    #diff = []
+#    for t in theta:
+#        tcm = kin.thetacom(t*math.pi/180)
+#        b = kin.b_fromthetacom(tcm)
+#        diff = relativistic(kin,b, multipole("E",2),mat,targetexc)*10
+#        #test = kin.thetacom_fromb(b)
+#        #print "%04f\t%04f\t%04f\t%04f" %(t,tcm,b,test)
+#        print "%04f\t%04f" %(t,diff)
+#    #print theta
+#    return
+    
     ## if a minimum impact parameter is given
     if minb > 0:
         minbrel = kin.brel(minb)

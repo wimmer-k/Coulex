@@ -5,7 +5,7 @@ import re
 MASSFILE = '/home/wimmer/programs/coulex/ame2016.dat'
 AMU = 931.4940954 # MeV
 R0 = 1.25
-EE = 1.439964535166
+EE = 1.439964535166 #MeV*fm
 
 class kinematics:
     def __init__(self,*args, **kwargs):
@@ -18,9 +18,9 @@ class kinematics:
         self.epu = kwargs.get('epu',None)
         self.exc = kwargs.get('exc',None)
         if self.epa is None:
-            self.epa = self.epu/self.proj.A*self.proj.mass/AMU
+            self.epa = self.epu*1.0/self.proj.A*self.proj.mass/AMU
         if self.epu is None:
-            self.epu = self.epa*self.proj.A/(self.proj.mass/AMU)
+            self.epu = self.epa*1.0*self.proj.A/(self.proj.mass/AMU)
 
         if self.ejec is None and self.reco is None:
             print "(in)elastic scattering"
@@ -54,7 +54,7 @@ class kinematics:
         self.reco.COM(Tcom = self.Tcom_final/2*(self.Tcom_final+2*self.ejec.mass)/self.comenergy)
         self.ejec.COM(Tcom = self.Tcom_final/2*(self.Tcom_final+2*self.reco.mass)/self.comenergy)
 
-        self.reco.bcom =  self.reco.bcom
+        #self.reco.bcom =  self.reco.bcom
        
         #print self.betacm
         
@@ -66,11 +66,15 @@ class kinematics:
         print "Ebeam = %.2f AMeV = %.2f MeV/u = %.2f MeV" % (self.epa, self.epu, self.epa*self.proj.A)
         print "E_com = %.3f MeV, T_com = %.3f MeV" % (self.comenergy, self.Tcom_initial)
         print "E_x = %.3f MeV" % self.exc
-        print "beta_p(lab) = %.5f" % self.proj.blab
+        print "beta_p(lab) = %.5f, gamma_p(lab) = %.5f" % (self.proj.blab, gamma(self.proj.blab))
         
     def b_fromd(self,d):
         a = self.proj.Z*self.targ.Z*EE/self.redmass/self.proj.blab**2/gamma(self.proj.blab)
         return math.sqrt(d*d-2*a*d/gamma(self.proj.blab))
+
+    def b_fromthetacom(self,theta):
+        a = self.proj.Z*self.targ.Z*EE/self.redmass/self.proj.blab**2/gamma(self.proj.blab)
+        return a/math.tan(theta/2)
 
     def brel(self,b):
         a = self.proj.Z*self.targ.Z*EE/self.redmass/self.proj.blab**2/gamma(self.proj.blab)
@@ -136,12 +140,13 @@ class nucleus:
         if self.A is None or self.Z is None:
              self.A, self.Z = self.AZ_fromsymbol()
 
+        #print self.A, self.Z, self.symbol
         self.mass = self.mass_fromsymbol()
         self.radius = R0*math.pow(self.A,1./3)
         #self.report()
 
     def report(self):     
-        print "%s: A = %d, Z= %d, N= %d, M = %.4f u" % (self.symbol,self.A,self.Z,self.A-self.Z,self.mass/AMU)
+        print "%s: A = %d, Z = %d, N = %d, M = %.4f u = %.4f MeV" % (self.symbol,self.A,self.Z,self.A-self.Z,self.mass/AMU,self.mass)
 
     def LAB(self,**kwargs):
         self.Tlab =  kwargs.get('Tlab',None)
@@ -160,6 +165,8 @@ class nucleus:
         self.bcom = self.Pcom/self.Ecom
  
     def AZ_fromsymbol(self):
+        if self.symbol == 'e':
+            return 0, -1
         digit_pattern = re.compile(r'\D')
         alpha_pattern = re.compile(r'\d')
         A = filter(None, digit_pattern.split(self.symbol))
@@ -167,6 +174,8 @@ class nucleus:
         return int(A[0]), symbols.index(sym[0])
 
     def mass_fromsymbol(self):
+        if self.symbol == 'e':
+            return 0.511
         with open(MASSFILE,'r') as f:
             for line in f:
                 vals = line.split()
