@@ -1,4 +1,4 @@
-# Coulex
+# alderwinther
 Relativistic Coulomb excitation
 
 following
@@ -17,3 +17,13 @@ if not b_min is given, a "safe" bmin of Rp + Rt + 2 fm is used
 example:
 
 ./alderwinther.py -p 22O -e 55.6 -m 4.5345 -x 3.17
+
+
+# atomicBG
+Calculation of atomic background spectra with relativistic heavy ion beams
+
+following
+
+R. Anholt et al., Phys. Rev. A 33 (1986) 2270
+
+based on the abkg code R. Holzmann (GSI) 1998

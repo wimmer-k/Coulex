@@ -29,13 +29,12 @@ def main(argv):
         if opt == '-h':
             print 'alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (e^2fm^4)>' 
             sys.exit()
-        if opt == '-v':
+        elif opt == '-v':
             tests(arg)
             sys.exit()
-        if opt == '-i':
+        elif opt == '-i':
             print "target excitation"
             targetexc = True
-
         elif opt in ("-p", "--proj"):
             pro = nucleus(arg)
         elif opt in ("-t", "--targ"):

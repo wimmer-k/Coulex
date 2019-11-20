@@ -7,10 +7,9 @@ from comptonprofile import *
 import matplotlib.pyplot as plt
 from ROOT import TFile, TH2F
 
-
+#constants
 ALPHA = 0.0072973525693 # finestrcuture constant
 MEC2 = 510.998950   # mass electron keV
-#EE = 1.439964535166 #MeV*fm 
 HBARC = 197.3269788 #MeV*fm 
 
 CP = None
@@ -23,6 +22,34 @@ def main(argv):
     #tar = nucleus('e')
     #beam energy
     E  = 300 #in MeV/u
+    COMP = 'REC,PB,SEB'
+    
+    ## read commandline arguments
+    try:
+        opts, args = getopt.getopt(argv,"hv:p:t:e:c:",["proj=","targ=","ebeam=","comp="])
+    except getopt.GetoptError:
+        print 'atomicBG.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -c <component: REC, PB, SEB, all>' 
+        sys.exit(2)
+#    print opts
+#    print args
+    for opt, arg in opts:
+#        print opt, arg
+        if opt == '-h':
+            print 'atomicBG.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -c <component: REC, PB, SEB, all>' 
+            sys.exit()
+        elif opt == '-v':
+            tests(arg)
+            sys.exit()
+        elif opt in ("-p", "--proj"):
+            pro = nucleus(arg)
+        elif opt in ("-t", "--targ"):
+            tar = nucleus(arg)
+        elif opt in ("-e", "--ebeam"):
+           E = float(arg)
+        elif opt in ("-c", "--comp"):
+             COMP = arg
+    if COMP == 'all':
+        COMP = 'REC,PB,SEB'
 
     ## setup and print kinematics
     kin = kinematics(proj=pro,targ=tar,epu=E,exc=0)
@@ -36,34 +63,39 @@ def main(argv):
     tr = [0,180,10]
     
     hfile = TFile('test.root', 'RECREATE')
-    hREC  = TH2F('hREC', 'REC', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
-    sREC = 0
-    hPB  = TH2F('hPB', 'PB', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
-    sPB = 0
-    for t in range(180):
-        e,s = dSdO_REC(kin,t*math.pi/180 ,1)  # b/sr
-        sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180
-        hREC.Fill(t,e,s)
-        e,s = dSdO_REC(kin,t*math.pi/180 ,2)  # b/sr
-        hREC.Fill(t,e,s)
-        sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180
-    
-        
-    for ee in np.arange(*er):
-        we = 1
-        if ee==er[0] or ee == er[1]:
-            we=0.5
-        for t in np.arange(*tr):
-            #print ee
-            wt =1
-            if t==tr[0] or t ==tr[1]:
-                wt=0.5
-            e,s = dSdEdO_PB(kin,ee,t*math.pi/180)  # b/sr
-            sPB = sPB+2.*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*tr[2]*er[2]*wt*we
-            hPB.Fill(t,e,s)
-            
-    print "cross section REC = %.3f barn" % sREC
-    print "cross section PB = %.3f barn" % sPB
+    if 'REC' in COMP:
+        hREC  = TH2F('hREC', 'REC', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
+        sREC = 0
+        for t in range(180):
+            e,s = dSdO_REC(kin,t*math.pi/180 ,1)  # b/sr
+            sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180
+            hREC.Fill(t,e,s)
+            e,s = dSdO_REC(kin,t*math.pi/180 ,2)  # b/sr
+            hREC.Fill(t,e,s)
+            sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180
+        print "cross section REC = %.3f barn" % sREC
+
+    if 'PB' in COMP:
+        hPB  = TH2F('hPB', 'PB', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
+        sPB = 0
+        for ee in np.arange(*er):
+            we = 1
+            if ee==er[0] or ee == er[1]:
+                we=0.5
+            for t in np.arange(*tr):
+                    #print ee
+                wt =1
+                if t==tr[0] or t ==tr[1]:
+                    wt=0.5
+                e,s = dSdEdO_PB(kin,ee,t*math.pi/180)  # b/sr
+                sPB = sPB+2.*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*tr[2]*er[2]*wt*we
+                hPB.Fill(t,e,s)
+        print "cross section PB = %.3f barn" % sPB
+
+    if 'SEB' in COMP:
+        hSEB  = TH2F('hSEB', 'SEB', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
+        sSEB = 0
+        print "cross section SEB = %.3f barn" % sSEB
     hfile.Write()
 
     return
