@@ -66,12 +66,12 @@ def main(argv):
     CP = comptonprofile(tar=tar.symbol)
 
     #energy range and stepsize
-    er = [10,1010,10]
+    er = [50,1010,10]
     #theta range and stepsize
     tr = [0,180,10]
 
     filename = "%s_%s_%dAMeV.root" %(pro.symbol, tar.symbol, int(E))
-    print("writing output to file ", filename)
+    print("writing output to file %s" % filename)
     hfile = TFile(filename, 'RECREATE')
     hsum  = TH2F('h1', 'sum', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
     if 'REC' in COMP:
@@ -82,13 +82,13 @@ def main(argv):
             if t==tr[0] or t ==tr[1]:
                 wt=0.5
             e,s = dSdO_REC(kin,t*math.pi/180 ,1)  # b/sr
-            sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*wt
+            sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*wt*tr[2]
             hREC.Fill(t,e,s)
             hsum.Fill(t,e,s)
             e,s = dSdO_REC(kin,t*math.pi/180 ,2)  # b/sr
             hREC.Fill(t,e,s)
             hsum.Fill(t,e,s)
-            sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*wt
+            sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*wt*tr[2]
         print("cross section REC = %.3f barn" % sREC)
 
     if 'PB' in COMP:

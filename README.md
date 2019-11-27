@@ -36,6 +36,6 @@ chmod 744 atomicBG.py
 
 example:
 
-./atomicBG.py -p 110Zr -t 9Be - 205 -c all
+./atomicBG.py -p 110Zr -t 9Be -e 205 -c all
 
 The cross section depends on the range of the integration. The energy range is defined in lines 68 of atomicBG.py and the following and should be adjusted.
