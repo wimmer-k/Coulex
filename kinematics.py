@@ -23,7 +23,7 @@ class kinematics:
             self.epu = self.epa*1.0*self.proj.A/(self.proj.mass/AMU)
 
         if self.ejec is None and self.reco is None:
-            print "(in)elastic scattering"
+            print("(in)elastic scattering")
             self.ejec = self.proj
             self.reco = self.targ
 
@@ -59,14 +59,14 @@ class kinematics:
         #print self.betacm
         
     def report(self):
-        print "projectile: ",
+        print("projectile: "),
         self.proj.report()
-        print "target:     ",
+        print("target:     "),
         self.targ.report()
-        print "Ebeam = %.2f AMeV = %.2f MeV/u = %.2f MeV" % (self.epa, self.epu, self.epa*self.proj.A)
-        print "E_com = %.3f MeV, T_com = %.3f MeV" % (self.comenergy, self.Tcom_initial)
-        print "E_x = %.3f MeV" % self.exc
-        print "beta_p(lab) = %.5f, gamma_p(lab) = %.5f" % (self.proj.blab, gamma(self.proj.blab))
+        print("Ebeam = %.2f AMeV = %.2f MeV/u = %.2f MeV" % (self.epa, self.epu, self.epa*self.proj.A))
+        print("E_com = %.3f MeV, T_com = %.3f MeV" % (self.comenergy, self.Tcom_initial))
+        print("E_x = %.3f MeV" % self.exc)
+        print("beta_p(lab) = %.5f, gamma_p(lab) = %.5f" % (self.proj.blab, gamma(self.proj.blab)))
         
     def b_fromd(self,d):
         a = self.proj.Z*self.targ.Z*EE/self.redmass/self.proj.blab**2/gamma(self.proj.blab)
@@ -114,7 +114,7 @@ class kinematics:
         angle_com = self.thetacom(angle_lab,part)
         x = self.betacm/part.bcom
         jacobi = self.gammacm *(1+x*math.cos(angle_com))/ (math.sin(angle_com)**2+self.gammacm**2*(math.cos(angle_com)+x)**2)**(3./2)
-        #print jacobi
+        #print(jacobi)
         return angle_com, sigma_lab*jacobi
         
     def lab_fromcom(self, angle_com, sigma_com, part=None):
@@ -140,13 +140,13 @@ class nucleus:
         if self.A is None or self.Z is None:
              self.A, self.Z = self.AZ_fromsymbol()
 
-        #print self.A, self.Z, self.symbol
+        #print(self.A, self.Z, self.symbol)
         self.mass = self.mass_fromsymbol()
         self.radius = R0*math.pow(self.A,1./3)
         #self.report()
 
     def report(self):     
-        print "%s: A = %d, Z = %d, N = %d, M = %.4f u = %.4f MeV" % (self.symbol,self.A,self.Z,self.A-self.Z,self.mass/AMU,self.mass)
+        print("%s: A = %d, Z = %d, N = %d, M = %.4f u = %.4f MeV" % (self.symbol,self.A,self.Z,self.A-self.Z,self.mass/AMU,self.mass))
 
     def LAB(self,**kwargs):
         self.Tlab =  kwargs.get('Tlab',None)
@@ -181,7 +181,7 @@ class nucleus:
                 vals = line.split()
                 if len(vals) == 6 and int(vals[2]) == self.Z and int(vals[3]) == self.A:
                     return float(vals[5])/1e6*AMU
-        print "Warning! Mass for %s not found!" % self.symbol
+        print("Warning! Mass for %s not found!" % self.symbol)
         return 0
 
     

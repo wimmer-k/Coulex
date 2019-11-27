@@ -16,8 +16,8 @@ class comptonprofile:
     def init(self):
         vals  = np.loadtxt(PROFILEFILE,unpack=True, comments='#',skiprows=1)
         if self.tar not in idtag:
-            print "Compton profile of %s no implemented" % self.tar
-            print "check: F. Biggs, L.B. Mendelsohn, J.B. Mann, Atomic Data and Nuclear Data Tables, 16, 201 (1975)"
+            print("Compton profile of %s no implemented" % self.tar)
+            print("check: F. Biggs, L.B. Mendelsohn, J.B. Mann, Atomic Data and Nuclear Data Tables, 16, 201 (1975)")
             return
         self.J = interp1d(vals[0],vals[idtag[self.tar]], kind='linear')
         normJ = integrate.quad(self.profile,-100,100,limit=200,full_output=1)

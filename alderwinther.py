@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Python program to calculate the Alder-Winther cross section for electromagnetic excitations
+# based on Winther and Alder, Nucl Phys A 319 (1979) 518
+
 import sys, getopt
 from kinematics import *
 from coulex import *
