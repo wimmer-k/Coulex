@@ -66,7 +66,7 @@ def main(argv):
     CP = comptonprofile(tar=tar.symbol)
 
     #energy range and stepsize
-    er = [50,1010,10]
+    er = [10,1010,10]
     #theta range and stepsize
     tr = [0,180,10]
 
@@ -74,9 +74,11 @@ def main(argv):
     print("writing output to file %s" % filename)
     hfile = TFile(filename, 'RECREATE')
     hsum  = TH2F('h1', 'sum', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
+    sREC = 0
+    sPB = 0
+    sSEB = 0
     if 'REC' in COMP:
         hREC  = TH2F('hREC', 'REC', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
-        sREC = 0
         for t in np.arange(*tr):
             wt =1
             if t==tr[0] or t ==tr[1]:
@@ -93,7 +95,6 @@ def main(argv):
 
     if 'PB' in COMP:
         hPB  = TH2F('hPB', 'PB', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
-        sPB = 0
         for ee in np.arange(*er):
             we = 1
             if ee==er[0] or ee == er[1]:
@@ -111,7 +112,6 @@ def main(argv):
 
     if 'SEB' in COMP:
         hSEB  = TH2F('hSEB', 'SEB', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
-        sSEB = 0
         for ee in np.arange(*er):
             we = 1
             if ee==er[0] or ee == er[1]:
@@ -127,6 +127,7 @@ def main(argv):
                 hsum.Fill(t,e,s)
         print("cross section SEB = %.3f barn" % sSEB)
     print("total cross section = %.3f barn" % (sREC+sPB+sSEB))
+    hsum.SetTitle("total cross section = %.3f barn" % (sREC+sPB+sSEB))
     hfile.Write()
 
     return
