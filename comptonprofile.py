@@ -6,7 +6,7 @@ from scipy.interpolate import interp1d
 import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 PROFILEFILE = '/home/wimmer/programs/coulex/comptonprofiles.dat'
-idtag = {'1H': 1, '9Be': 2, '12C': 3, '179Au': 4, '208Pb':5}
+idtag = {'1H': 1, '9Be': 2, '12C': 3, '197Au': 4, '208Pb':5}
 
 class comptonprofile:
     def __init__(self,*args, **kwargs):
