@@ -9,7 +9,7 @@ usage:
 
 chmod 744 alderwinther.py
 
-./alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (e^2fm^4)>
+./alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (efm^2)>
   
 if no b_min is given, a "safe" bmin of Rp + Rt + 2 fm is used
 
