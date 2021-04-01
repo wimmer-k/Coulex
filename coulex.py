@@ -26,7 +26,7 @@ def relativistic(kin, bmin, mult, mat, targetexc=False):
     else:
         sigma *= (kin.targ.Z*EE/HBARC)**2*k**(2*mult.L-2)*mat**2
 
-    #print "P(m) = ", Pm/sum(Pm)
+    print "P(m) = ", Pm/sum(Pm)
     return sigma
     
     

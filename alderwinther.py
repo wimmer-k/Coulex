@@ -24,7 +24,7 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hv:p:t:e:x:b:m:i",["proj=","targ=","ebeam=","exc=","bmin=","matE="])
     except getopt.GetoptError:
-        print 'alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (e^2fm^4)>' 
+        print 'alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (efm^2)>' 
         sys.exit(2)
 #    print opts
 #    print args

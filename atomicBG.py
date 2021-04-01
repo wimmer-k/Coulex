@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Python implemenation of the abkg program to calculate the photon spectrum and cross section for atomic processes in heavy ion collisions
+# Python implementation of the abkg program to calculate the photon spectrum and cross section for atomic processes in heavy ion collisions
 # based on program "abkg" R. Holzmann, GSI, 1998, with modifications by H. Scheit
 
 import sys, getopt
@@ -66,7 +66,7 @@ def main(argv):
     CP = comptonprofile(tar=tar.symbol)
 
     #energy range and stepsize
-    er = [10,1010,10]
+    er = [200,1200,10]
     #theta range and stepsize
     tr = [0,180,10]
 
