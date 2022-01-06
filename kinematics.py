@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import math
 import re
 #import numpy as np
@@ -169,8 +169,8 @@ class nucleus:
             return 0, -1
         digit_pattern = re.compile(r'\D')
         alpha_pattern = re.compile(r'\d')
-        A = filter(None, digit_pattern.split(self.symbol))
-        sym = filter(None, alpha_pattern.split(self.symbol))
+        A = list(filter(None, digit_pattern.split(self.symbol)))
+        sym = list(filter(None, alpha_pattern.split(self.symbol)))
         return int(A[0]), symbols.index(sym[0])
 
     def mass_fromsymbol(self):

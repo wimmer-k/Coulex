@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import math
 import cmath
 import scipy.special as sp
@@ -15,18 +15,18 @@ def relativistic(kin, bmin, mult, mat, targetexc=False):
     ## equation 2.24 (with 1.4 and 2.11)
     xi = k/kin.proj.blab/gamma(kin.proj.blab)*kin.brel(bmin)
     sigma = 0
-    #print mult.substates()
+    #print(mult.substates())
     Pm = []
     for ll in mult.substates():
        sigma += abs(G(mult,ll,1./kin.proj.blab))**2 * g(ll,xi)
        Pm.append(abs(G(mult,ll,1./kin.proj.blab))**2 * g(ll,xi))
-       #print ll,  abs(G(mult,ll,1./kin.proj.blab))**2, g(ll,xi), sigma
+       #print(ll,  abs(G(mult,ll,1./kin.proj.blab))**2, g(ll,xi), sigma)
     if targetexc is True:
         sigma *= (kin.proj.Z*EE/HBARC)**2*k**(2*mult.L-2)*mat**2
     else:
         sigma *= (kin.targ.Z*EE/HBARC)**2*k**(2*mult.L-2)*mat**2
 
-    print "P(m) = ", Pm/sum(Pm)
+    print("P(m) = ", Pm/sum(Pm))
     return sigma
     
     
@@ -95,7 +95,7 @@ class multipole:
             self.L = args[1]
             
     def report(self):
-        print str(self.EM) + str(self.L)
+        print(str(self.EM) + str(self.L))
 
 
     # magnetic substates for L = -L , -L +1 ,... , L - 1, L

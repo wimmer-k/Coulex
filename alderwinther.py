@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Python program to calculate the Alder-Winther cross section for electromagnetic excitations
 # based on Winther and Alder, Nucl Phys A 319 (1979) 518
 
@@ -24,19 +24,19 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hv:p:t:e:x:b:m:i",["proj=","targ=","ebeam=","exc=","bmin=","matE="])
     except getopt.GetoptError:
-        print 'alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (efm^2)>' 
+        print('alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (efm^2)>')
         sys.exit(2)
 #    print opts
 #    print args
     for opt, arg in opts:
         if opt == '-h':
-            print 'alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (e^2fm^4)>' 
+            print('alderwinther.py -p <projectile> -t <target> -e <beam energy (MeV/u)> -x <excitation energy (MeV)> -b <b_min (fm)> -m <matrix element (e^2fm^4)>')
             sys.exit()
         elif opt == '-v':
             tests(arg)
             sys.exit()
         elif opt == '-i':
-            print "target excitation"
+            print("target excitation")
             targetexc = True
         elif opt in ("-p", "--proj"):
             pro = nucleus(arg)
@@ -58,7 +58,7 @@ def main(argv):
     #distance of closes approach for touchign spheres, grazing
     dgrazing = pro.radius + tar.radius
     bgrazing =  kin.b_fromd(dgrazing)
-    print "grazing distance d_grazing = %.4f fm, impact parameter b_grazing = %.4f fm" % (dgrazing,bgrazing)
+    print("grazing distance d_grazing = %.4f fm, impact parameter b_grazing = %.4f fm" % (dgrazing,bgrazing))
 
 #    theta = np.linspace(0,5,501)
 #    #diff = []
@@ -67,33 +67,33 @@ def main(argv):
 #        b = kin.b_fromthetacom(tcm)
 #        diff = relativistic(kin,b, multipole("E",2),mat,targetexc)*10
 #        #test = kin.thetacom_fromb(b)
-#        #print "%04f\t%04f\t%04f\t%04f" %(t,tcm,b,test)
-#        print "%04f\t%04f" %(t,diff)
-#    #print theta
+#        #print("%04f\t%04f\t%04f\t%04f" %(t,tcm,b,test))
+#        print("%04f\t%04f" %(t,diff))
+#    #print(theta)
 #    return
     
     ## if a minimum impact parameter is given
     if minb > 0:
         minbrel = kin.brel(minb)
-        print "minimum impact paramter = %.4f fm, relativistic modification = %.4f fm" % (minb,minbrel)
+        print("minimum impact paramter = %.4f fm, relativistic modification = %.4f fm" % (minb,minbrel))
         theta_com = kin.thetacom_fromb(minbrel)
         theta_lab = kin.thetalab(theta_com)
-        print "theta_com = %.4f rad, theta_lab = %.4f rad" % (theta_com,theta_lab)
-        print "theta_com = %.4f deg, theta_lab = %.4f deg" % (theta_com*180/math.pi,theta_lab*180/math.pi)
+        print("theta_com = %.4f rad, theta_lab = %.4f rad" % (theta_com,theta_lab))
+        print("theta_com = %.4f deg, theta_lab = %.4f deg" % (theta_com*180/math.pi,theta_lab*180/math.pi))
 
-        print "sigma = %.5f mb" % (relativistic(kin,minb, multipole("E",2),mat,targetexc)*10)
+        print("sigma = %.5f mb" % (relativistic(kin,minb, multipole("E",2),mat,targetexc)*10))
     ## use the touching sphere distance + 2 fm as safe distance, 
     else:
         dsafe = pro.radius + tar.radius + 2
         bsafe = kin.b_fromd(dsafe)
         minbrel = kin.brel(bsafe)
-        print "safe distance d_safe (Rp + Rt + 2 fm) = %.4f, impact parameter b_safe = %.4f fm, relativistic modification = %.4f fm" % (dsafe,bsafe, minbrel)
+        print("safe distance d_safe (Rp + Rt + 2 fm) = %.4f, impact parameter b_safe = %.4f fm, relativistic modification = %.4f fm" % (dsafe,bsafe, minbrel))
         theta_com = kin.thetacom_fromb(minbrel)
         theta_lab = kin.thetalab(theta_com)
-        print "theta_com = %.4f rad, theta_lab = %.4f rad" % (theta_com,theta_lab)
-        print "theta_com = %.4f deg, theta_lab = %.4f deg" % (theta_com*180/math.pi,theta_lab*180/math.pi)
+        print("theta_com = %.4f rad, theta_lab = %.4f rad" % (theta_com,theta_lab))
+        print("theta_com = %.4f deg, theta_lab = %.4f deg" % (theta_com*180/math.pi,theta_lab*180/math.pi))
        
-        print "sigma = %.5f mb" % (relativistic(kin,bsafe, multipole("E",2),mat,targetexc)*10)
+        print("sigma = %.5f mb" % (relativistic(kin,bsafe, multipole("E",2),mat,targetexc)*10))
   
 
     
@@ -120,11 +120,11 @@ def tests(arg):
     if arg == "G":
         mult = multipole("E",1)
         mult.report()
-        print G(mult,0,0)
-        print G(mult,0,0.5)
-        print G(mult,0,1)
-        print G(mult,0,1.5)
-        print G(mult,0,2)
+        print(G(mult,0,0))
+        print(G(mult,0,0.5))
+        print(G(mult,0,1))
+        print(G(mult,0,1.5))
+        print(G(mult,0,2))
 
 
     return
