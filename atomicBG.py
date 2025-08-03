@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Python implementation of the abkg program to calculate the photon spectrum and cross section for atomic processes in heavy ion collisions
 # based on program "abkg" R. Holzmann, GSI, 1998, with modifications by H. Scheit
 
@@ -66,35 +66,44 @@ def main(argv):
     CP = comptonprofile(tar=tar.symbol)
 
     #energy range and stepsize
-    er = [200,1200,10]
+    er = [5,2005,5]
     #theta range and stepsize
-    tr = [0,180,10]
+    tr = [0,180,2]
 
     filename = "%s_%s_%dAMeV.root" %(pro.symbol, tar.symbol, int(E))
     print("writing output to file %s" % filename)
     hfile = TFile(filename, 'RECREATE')
-    hsum  = TH2F('h1', 'sum', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
+    hsum  = TH2F('h1', 'sum', int((tr[1]-tr[0])/tr[2]),tr[0],tr[1], int((er[1]-er[0])/er[2]),er[0],er[1])
+    hsum_dc  = TH2F('h1_dc', 'sum_dc', int((tr[1]-tr[0])/tr[2]),tr[0],tr[1], int((er[1]-er[0])/er[2]),er[0],er[1])
     sREC = 0
     sPB = 0
     sSEB = 0
     if 'REC' in COMP:
-        hREC  = TH2F('hREC', 'REC', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
+        hREC  = TH2F('hREC', 'REC', int((tr[1]-tr[0])/tr[2]),tr[0],tr[1], int((er[1]-er[0])/er[2]),er[0],er[1])
+        hREC_dc  = TH2F('hREC_dc', 'REC_dc', int((tr[1]-tr[0])/tr[2]),tr[0],tr[1], int((er[1]-er[0])/er[2]),er[0],er[1])
         for t in np.arange(*tr):
             wt =1
             if t==tr[0] or t ==tr[1]:
                 wt=0.5
             e,s = dSdO_REC(kin,t*math.pi/180 ,1)  # b/sr
+            e_dc = e*(1-math.cos(t*math.pi/180)*kin.proj.blab)*gamma(kin.proj.blab)
             sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*wt*tr[2]
             hREC.Fill(t,e,s)
             hsum.Fill(t,e,s)
+            hREC_dc.Fill(t,e_dc,s)
+            hsum_dc.Fill(t,e_dc,s)
             e,s = dSdO_REC(kin,t*math.pi/180 ,2)  # b/sr
+            e_dc = e*(1-math.cos(t*math.pi/180)*kin.proj.blab)*gamma(kin.proj.blab)
             hREC.Fill(t,e,s)
             hsum.Fill(t,e,s)
+            hREC_dc.Fill(t,e_dc,s)
+            hsum_dc.Fill(t,e_dc,s)
             sREC = sREC+2*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*wt*tr[2]
         print("cross section REC = %.3f barn" % sREC)
 
     if 'PB' in COMP:
-        hPB  = TH2F('hPB', 'PB', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
+        hPB  = TH2F('hPB', 'PB', int((tr[1]-tr[0])/tr[2]),tr[0],tr[1], int((er[1]-er[0])/er[2]),er[0],er[1])
+        hPB_dc  = TH2F('hPB_dc', 'PB_dc', int((tr[1]-tr[0])/tr[2]),tr[0],tr[1], int((er[1]-er[0])/er[2]),er[0],er[1])
         for ee in np.arange(*er):
             we = 1
             if ee==er[0] or ee == er[1]:
@@ -105,13 +114,17 @@ def main(argv):
                 if t==tr[0] or t ==tr[1]:
                     wt=0.5
                 e,s = dSdEdO_PB(kin,ee,t*math.pi/180)  # b/sr
+                e_dc = e*(1-math.cos(t*math.pi/180)*kin.proj.blab)*gamma(kin.proj.blab)
                 sPB = sPB+2.*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*tr[2]*er[2]*wt*we
                 hPB.Fill(t,e,s)
                 hsum.Fill(t,e,s)
+                hPB_dc.Fill(t,e_dc,s)
+                hsum_dc.Fill(t,e_dc,s)
         print("cross section PB = %.3f barn" % sPB)
 
     if 'SEB' in COMP:
-        hSEB  = TH2F('hSEB', 'SEB', (tr[1]-tr[0])/tr[2],tr[0],tr[1], (er[1]-er[0])/er[2],er[0],er[1])
+        hSEB  = TH2F('hSEB', 'SEB', int((tr[1]-tr[0])/tr[2]),tr[0],tr[1], int((er[1]-er[0])/er[2]),er[0],er[1])
+        hSEB_dc  = TH2F('hSEB_dc', 'SEB_dc', int((tr[1]-tr[0])/tr[2]),tr[0],tr[1], int((er[1]-er[0])/er[2]),er[0],er[1])
         for ee in np.arange(*er):
             we = 1
             if ee==er[0] or ee == er[1]:
@@ -123,8 +136,11 @@ def main(argv):
                     wt=0.5
                 sSEB = sSEB+2.*math.pi*s*math.sin(t*math.pi/180)*math.pi/180*tr[2]*er[2]*wt*we
 #                print("%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f" %(ee, t, s, sSEB, math.sin(t*math.pi/180), er[2], tr[2], math.pi/180, we, wt) )
+                e_dc = e*(1-math.cos(t*math.pi/180)*kin.proj.blab)*gamma(kin.proj.blab)
                 hSEB.Fill(t,e,s)
                 hsum.Fill(t,e,s)
+                hSEB_dc.Fill(t,e_dc,s)
+                hsum_dc.Fill(t,e_dc,s)
         print("cross section SEB = %.3f barn" % sSEB)
     print("total cross section = %.3f barn" % (sREC+sPB+sSEB))
     hsum.SetTitle("total cross section = %.3f barn" % (sREC+sPB+sSEB))
