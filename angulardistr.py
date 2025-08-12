@@ -74,8 +74,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     P_m = np.array(args.Pm)
-    if not np.isclose(np.sum(P_m), 1.0, atol=1e-5):
-        raise ValueError("P_m values must sum to 1.")
+    if not np.isclose(np.sum(P_m), 1.0, atol=1e-4):
+        raise ValueError("P_m values must sum to 1. Sum(P_m) = ", np.sum(P_m))
 
     rho2_0, rho4_0 = compute_alignment(P_m)
     a2, a4 = angular_coefficients(rho2_0, rho4_0, delta=args.delta)
