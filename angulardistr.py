@@ -46,9 +46,9 @@ def plot_W_theta(P_m, a2, a4):
     W_theta /= np.max(W_theta)
 
     fig, ax = plt.subplots()
-    ax.plot(np.degrees(theta), W_theta, label="W(θ)")
-    ax.set_xlabel("θ (degrees)")
-    ax.set_ylabel("W(θ)")
+    ax.plot(np.degrees(theta), W_theta, label="W(theta)")
+    ax.set_xlabel("theta (degrees)")
+    ax.set_ylabel("W(theta)")
     ax.set_title("Gamma Angular Distribution")
 
     inset_ax = fig.add_axes([0.6, 0.6, 0.3, 0.3])
